@@ -8,4 +8,4 @@ class QuanvolutionLayer(torch.nn.Module):
 
     def forward(self,x):
         return 0
-    def backward()
+    def backward():
