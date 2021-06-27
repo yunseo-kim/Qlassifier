@@ -14,9 +14,9 @@ from qiskit.visualization import *
 
 class QuantumCircuit:
     def __init__(self, n_qubits=9, backend=None, shots=1024):
-        qr = qiskit.QuantumRegister(n_qubits)
-        cr = qiskit.ClassicalRegister(1)
-        self.circuit = qiskit.QuantumCircuit(qr,cr)
+        self.qr = qiskit.QuantumRegister(n_qubits)
+        self.cr = qiskit.ClassicalRegister(1)
+        self.circuit = qiskit.QuantumCircuit(self.qr,self.cr)
         self.params = qiskit.circuit.ParameterVector('θ',3*n_qubits)
         self.n_qubits = n_qubits
         self.output_channels = n_qubits
@@ -32,13 +32,29 @@ class QuantumCircuit:
 
         self.backend = backend
         self.shots = shots
-    
-    def run(self,params):
+    def encoded_circuit(self,data,option='RY'):
+        en_circ = qiskit.QuantumCircuit(self.qr,self.cr)
+        # data range: 0 ~ 1
+        if option == 'RY':
+            for i, th in enumerate(data):
+                print(i,th)
+                en_circ.ry(th.item()*2*np.pi,i)
+        else:
+            pass
+        print(en_circ)
+        return en_circ
+
+    def run(self,data,params_tensor):
         output = []
+        params = params_tensor.tolist()
+        print({self.params:params})
+        if data is None:
+            new_circ = self.circuit
+        else:
+            new_circ = self.encoded_circuit(data)
+            new_circ.append(self.circuit,qargs=self.qr,cargs=self.cr)
         for j in range(self.output_channels):
-            t_qc = transpile(self.circuit,
-                         self.backend)
-            circ = t_qc.bind_parameters({self.params: params})
+            circ = new_circ.bind_parameters({self.params: params})
             circ.measure(j,0)
             job = qiskit.execute(circ, backend=self.backend,shots=self.shots)
             result = job.result().get_counts()
