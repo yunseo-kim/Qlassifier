@@ -37,34 +37,37 @@ class QuantumCircuit:
         # data range: 0 ~ 1
         if option == 'RY':
             for i, th in enumerate(data):
-                print(i,th)
+                # print(i,th)
                 en_circ.ry(th.item()*2*np.pi,i)
+        elif option == 'threshold':
+            for i, th in enumerate(data):
+                if th > 0.5:
+                    en_circ.x(i)
         else:
             pass
-        print(en_circ)
+        # print(en_circ)
         return en_circ
-
     def run(self,data,params_tensor):
         output = []
         params = params_tensor.tolist()
-        print({self.params:params})
+        # print({self.params:params})
         if data is None:
             new_circ = self.circuit
         else:
             new_circ = self.encoded_circuit(data)
             new_circ.append(self.circuit,qargs=self.qr,cargs=self.cr)
-        for j in range(self.output_channels):
-            circ = new_circ.bind_parameters({self.params: params})
-            circ.measure(j,0)
-            job = qiskit.execute(circ, backend=self.backend,shots=self.shots)
-            result = job.result().get_counts()
-            print(result)
-            counts = np.array(list(result.values()))
-            states = np.array(list(result.keys())).astype(float)
-            # Compute probabilities for each state
-            probabilities = counts / self.shots
-            # Get state expectation
-            expectation = np.sum(states * probabilities)
-            output.append(expectation)
+        circ = new_circ.bind_parameters({self.params: params})
+        circ.measure(0,0)
+        # circ.measure(range(self.output_channels),range(self.output_channels))
+        job = qiskit.execute(circ, backend=self.backend,shots=self.shots)
+        result = job.result().get_counts()
+        # print(result)
+        counts = np.array(list(result.values()))
+        states = np.array(list(result.keys())).astype(float)
+        # Compute probabilities for each state
+        probabilities = counts / self.shots
+        # Get state expectation
+        expectation = np.sum(states * probabilities)
+        output.append(expectation)
         
         return output

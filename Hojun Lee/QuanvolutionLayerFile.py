@@ -3,10 +3,11 @@ from torch.autograd import Variable
 import numpy as np
 from torch.autograd.function import Function
 from PQC import *
+import torchvision.transforms as T
 class QuanvolutionFunction(Function):
     def forward(ctx,inputs, out_channels, kernel_size, quantum_circuit, shift=np.pi/2, weight=None):
         # weight size: (#channels, #params)
-        _, in_channels, len_x, len_y = inputs.size()
+        batch_size, in_channels, len_x, len_y = inputs.size()
         len_x = len_x - kernel_size + 1
         len_y = len_y - kernel_size + 1
         if out_channels % in_channels != 0:
@@ -19,18 +20,20 @@ class QuanvolutionFunction(Function):
         features = []
         for input in inputs:
             feature = []
-            for i in range(in_channels):   
+            for i in range(in_channels):
+                print(i)
                 xys = []
                 for x in range(len_x):
                     ys = []
                     for y in range(len_y):
+                        # print(x,y)
                         data = input[0, x:x+kernel_size, y:y+kernel_size]
                         ys.append(quantum_circuit.run(data.flatten(),weight[i]))
                     xys.append(ys)
                 feature.append(xys)
             features.append(feature)       
         result = torch.tensor(features)
-
+        result.resize_((batch_size,out_channels,len_x,len_y))
         ctx.save_for_backward(inputs, result)
         return result
     def backward(ctx, grad_output):
