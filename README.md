@@ -24,11 +24,11 @@ Neural networks based on parameterized quantum circuits are relatively robust to
 ### Problem statement
 1. **Encoding / decoding methodology**  
 We will define intermediate states other than 0 or 1. We will also consider if the decoding process is executable since the only way to know about the final state is to measure it, especially in a real device.
-2. **Quantum circuit selection**
+2. **Quantum circuit selection**  
 We will choose 4 or 5 candidates from available quantum circuit templates, taking into account the expressibility, entangling capability, circuit cost, and trainability.
-3. **Experiment with diifferent number of quanvolution channels**
+3. **Experiment with diifferent number of quanvolution channels**  
 Each quanvolution channel extracts a distinct feature of the input data. Adding more quanvolutional filters would increase model performance. Nevertheless, too many channels lead to overfitting issue. We will choose the appropriate number of channels that get the most efficient model.
-4. **Training Quanvolution layer**
+4. **Training Quanvolution layer**  
 The training algorithm would also train the parameters consisting of the quantum circuits. For example, the rotation angle of the Rx gate will be optimized by the back-propagation algorithm. Qiskit gradient framework would enable us to optimize the circuit parameters continually in the quantum device.
 
 ### Test and Comparison
