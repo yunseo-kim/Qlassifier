@@ -10,7 +10,7 @@
 |Dongok Kim|[@JadeKim](https://github.com/JadeKim)
 |Hojun Lee|[@String137](https://github.com/String137)
 |Jaehoon Hahm|[@Jaehoon-zx](https://github.com/Jaehoon-zx)
-|Yunseo Kim|[@Yunseo47](https://github.com/Yunseo47)
+|Yunseo Kim|[@yunseo-kim](https://github.com/yunseo-kim)
 
 ### Introduction
 In this challenge, we will construct a Classical-Quantum Hybrid Convolutional Neural Network(HCNN).  
